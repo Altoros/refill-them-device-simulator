@@ -1,5 +1,32 @@
 <ion-view view-title="Device Serial #">
   <ion-content class="padding">
-    <h2>Associate</h2>
+    <h2>Associate this Device</h2>
+
+    <div class="list">
+      <label class="item item-input item-floating-label">
+        <span class="input-label">Device Serial Number</span>
+        <input type="text" ng-model="device.serialNumber" disabled>
+      </label>
+      <label class="item item-input item-floating-label">
+        <span class="input-label">Device Name</span>
+        <input type="text" ng-model="device.name" placeholder="Device Name">
+      </label>
+      <label class="item item-input item-floating-label">
+        <span class="input-label">Total Shots</span>
+        <input type="text" ng-model="device.totalShots" placeholder="Total Shots">
+      </label>
+      <label class="item item-input item-floating-label">
+        <span class="input-label">Notify Refill At</span>
+        <input type="text" ng-model="device.notifyRefillAt" placeholder="Notify Refill At">
+      </label>
+      <label class="item item-input item-floating-label">
+        <span class="input-label">E-mail</span>
+        <input type="text" ng-model="device.email" placeholder="user@domain.com">
+      </label>
+    </div>
+
+    <div class="padding">
+      <button class="button button-block button-positive" ng-click="associateDevice()">Associate</button>
+    </div>
   </ion-content>
 </ion-view>

@@ -1,5 +1,45 @@
 <ion-view view-title="Device Serial #">
   <ion-content class="padding">
     <h2>Info</h2>
+
+    <div class="list">
+
+      <div class="item">
+        Serial Number: {{ device.serialNumber }}
+      </div>
+
+      <div class="item">
+        Name: {{ device.name }}
+      </div>
+
+      <div class="item">
+        Consumed Shots: {{ device.consumedShots }}
+      </div>
+
+      <div class="item">
+        Total Shots: {{ device.totalShots }}
+      </div>
+
+      <div class="item">
+        Notify Refill At: {{ device.notifyRefillAt }}
+      </div>
+
+      <div class="item">
+        E-mail: {{ device.email }}
+      </div>
+
+      <div class="item item-divider">
+        MQTT Credentials
+      </div>
+
+      <div class="item">
+        Username: {{ device.id }}
+      </div>
+
+      <div class="item">
+        Password: {{ device.password }}
+      </div>
+
+    </div>
   </ion-content>
 </ion-view>

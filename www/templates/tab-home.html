@@ -1,5 +1,15 @@
 <ion-view view-title="Device Serial #">
   <ion-content class="padding">
     <h2>Home</h2>
+
+    <button class="button button-block button-positive" ng-click="consumeShot()" ng-disabled="device.consumedShots === device.totalShots">
+      Consume shot
+    </button>
+
+    <button class="button button-block button-dark" ng-click="refill()">
+      Refill
+    </button>
+
+    <p>Status: {{ device.consumedShots }} consumed shots of {{ device.totalShots }} ({{ device.consumedShots/device.totalShots*100 | number:0 }} %) </p>
   </ion-content>
 </ion-view>

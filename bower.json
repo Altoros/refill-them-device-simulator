@@ -1,0 +1,7 @@
+{
+  "name": "refill-them-device-simulator",
+  "private": "true",
+  "devDependencies": {
+    "ionic": "driftyco/ionic-bower#1.2.4"
+  }
+}

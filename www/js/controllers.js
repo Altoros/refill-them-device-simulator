@@ -1,6 +1,6 @@
 angular.module('DeviceSimulator')
 
-.controller('HomeCtrl', function($scope, $state) {
+.controller('HomeCtrl', function($scope, $state, MQTT) {
 
   $scope.device = JSON.parse(localStorage.getItem('device'));
 
@@ -8,15 +8,48 @@ angular.module('DeviceSimulator')
     $state.go('tab.associate');
   }
 
+  $scope.connected = false;
+  $scope.connecting = true;
+
+  MQTT.connect($scope.device)
+    .then(function () {
+      $scope.connected = true;
+    }, function (err) {
+      console.log('Error trying to connect');
+    })
+    .finally(function () {
+      $scope.connecting = false;
+    });
+
   $scope.consumeShot = function () {
-    console.log('Shot consumed');
-    $scope.device.consumedShots++;
+    sendMessage('Shot consumed', 'STATUS_REPORT')
+      .then(function (message) {
+        $scope.device.consumedShots++;
+      });
   };
 
   $scope.refill = function () {
-    console.log('Refill');
-    $scope.device.consumedShots = 0;
+    sendMessage('Refill', 'STATUS_REPORT')
+      .then(function () {
+        $scope.device.consumedShots = 0;
+      });
   };
+
+  function sendMessage(message, channel) {
+    $scope.sending = true;
+    $scope.sendingError = false;
+
+    return MQTT.sendMessage(message, channel)
+      .then(function (message) {
+        console.log('Message Sent');
+      }, function (err) {
+        $scope.sendingError = true;
+        console.error(err);
+      })
+      .finally(function () {
+        $scope.sending = false;
+      });
+  }
 })
 
 .controller('AssociateCtrl', function($scope, $state, API) {
@@ -27,8 +60,10 @@ angular.module('DeviceSimulator')
   });
 
   $scope.associateDevice = function () {
+    $scope.submitting = true;
     API.post('/devices', { serial: $scope.device.serialNumber })
       .then(function (response) {
+        $scope.submitting = false;
         var device = response.data.device;
         delete $scope.device.serialNumber;
         $scope.device.associationCode = device.associationCode;
@@ -41,6 +76,7 @@ angular.module('DeviceSimulator')
             alert(err);
           });
       }, function (err) {
+        $scope.submitting = false;
         alert(err);
       });
   }

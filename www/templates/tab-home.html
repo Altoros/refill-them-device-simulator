@@ -2,14 +2,22 @@
   <ion-content class="padding">
     <h2>Home</h2>
 
-    <button class="button button-block button-positive" ng-click="consumeShot()" ng-disabled="device.consumedShots === device.totalShots">
+    <button class="button button-block button-positive" ng-click="consumeShot()"
+            ng-disabled="device.consumedShots === device.totalShots || connecting || !connected || sending">
       Consume shot
     </button>
 
-    <button class="button button-block button-dark" ng-click="refill()">
+    <button class="button button-block button-dark" ng-click="refill()" ng-disabled="connecting || !connected || sending">
       Refill
     </button>
 
     <p>Status: {{ device.consumedShots }} consumed shots of {{ device.totalShots }} ({{ device.consumedShots/device.totalShots*100 | number:0 }} %) </p>
+
+    <p ng-show="connecting">Connecting to the Server...</p>
+    <p ng-show="!connected && !connecting">Error trying to reach the Server</p>
+
+    <p ng-show="sending">Sending message...</p>
+    <p ng-show="sendingError">An error has occurred trying to send the message</p>
+
   </ion-content>
 </ion-view>

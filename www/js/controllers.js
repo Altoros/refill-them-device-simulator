@@ -63,7 +63,6 @@ angular.module('DeviceSimulator')
     $scope.submitting = true;
     API.post('/devices', { serial: $scope.device.serialNumber })
       .then(function (response) {
-        $scope.submitting = false;
         var device = response.data.device;
         delete $scope.device.serialNumber;
         $scope.device.associationCode = device.associationCode;
@@ -74,6 +73,9 @@ angular.module('DeviceSimulator')
             $state.go('tab.home');
           }, function (err) {
             alert(err);
+          })
+          .finally(function () {
+            $scope.submitting = false;
           });
       }, function (err) {
         $scope.submitting = false;

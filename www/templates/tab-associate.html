@@ -26,7 +26,10 @@
     </div>
 
     <div class="padding">
-      <button class="button button-block button-positive" ng-click="associateDevice()">Associate</button>
+      <button class="button button-block button-positive" ng-click="associateDevice()"
+              ng-disabled="submitting">
+        Associate
+      </button>
     </div>
   </ion-content>
 </ion-view>

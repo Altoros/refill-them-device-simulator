@@ -22,14 +22,14 @@ angular.module('DeviceSimulator')
     });
 
   $scope.consumeShot = function () {
-    sendMessage('Shot consumed', 'STATUS_REPORT')
+    sendMessage('consume_shot', 'STATUS_REPORT')
       .then(function (message) {
         $scope.device.consumedShots++;
       });
   };
 
   $scope.refill = function () {
-    sendMessage('Refill', 'STATUS_REPORT')
+    sendMessage('refill', 'STATUS_REPORT')
       .then(function () {
         $scope.device.consumedShots = 0;
       });

@@ -15,7 +15,16 @@
   "devDependencies": {
     "bower": "^1.3.3",
     "gulp-util": "^2.2.14",
+    "semistandard": "^7.0.5",
     "shelljs": "^0.3.0"
+  },
+  "semistandard": {
+    "ignore": [
+      "www/lib/mqttws31.js",
+      "gulpfile.js",
+      "hooks/*"
+    ],
+    "globals": ["angular"]
   },
   "cordovaPlugins": [
     "cordova-plugin-device",

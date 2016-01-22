@@ -1,4 +1,4 @@
-/* global cordova StatusBar */
+/* global cordova, StatusBar */
 angular.module('DeviceSimulator', ['ionic'])
 
 .run(function ($ionicPlatform) {

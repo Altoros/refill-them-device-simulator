@@ -1,7 +1,6 @@
 angular.module('DeviceSimulator')
 
-.controller('HomeCtrl', function($scope, $state, MQTT) {
-
+.controller('MainCtrl', function ($scope, $state, MQTT) {
   $scope.device = JSON.parse(localStorage.getItem('device'));
 
   if(!$scope.device) {
@@ -31,6 +30,9 @@ angular.module('DeviceSimulator')
     .finally(function () {
       $scope.connecting = false;
     });
+})
+
+.controller('HomeCtrl', function($scope, $state, MQTT) {
 
   $scope.consumeShot = function () {
     sendMessage('STATUS_REPORT', 'consume_shot')

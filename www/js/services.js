@@ -75,13 +75,13 @@ angular.module('DeviceSimulator')
         mqtt.device = device;
       }
 
-      if (!mqtt.instance) {
-        createInstance();
-      }
-
       if (!mqtt.device) {
         $q.reject('No device');
       } else {
+        if (!mqtt.instance) {
+          createInstance();
+        }
+
         // connect the client
         console.log('Connecting to broker: ', host);
         try {
@@ -140,7 +140,7 @@ angular.module('DeviceSimulator')
       }, waitingTime);
 
       try {
-        console.log('Sending message: ', data);
+        console.log('Sending message: ', payload);
         mqtt.instance.send(message);
 
         mqtt.waitForMessage = {

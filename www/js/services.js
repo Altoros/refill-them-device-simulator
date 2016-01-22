@@ -1,3 +1,4 @@
+/* global angular, Paho */
 angular.module('DeviceSimulator')
 
 .service('API', function ($http) {
@@ -28,7 +29,7 @@ angular.module('DeviceSimulator')
 })
 
 .service('MQTT', function ($q, $timeout) {
-  var host = 'broker.xively.com'
+  var host = 'broker.xively.com';
   var port = 443;
   var waitingTime = 5000;
 
@@ -36,28 +37,28 @@ angular.module('DeviceSimulator')
     mqtt.instance = new Paho.MQTT.Client(host, port, mqtt.device.id);
 
     // set event listeners
-    mqtt.instance.onConnectionLost = function(error) {
+    mqtt.instance.onConnectionLost = function (error) {
       console.log('Connection Lost. Reconnecting...');
       console.log(error);
       mqtt.connect();
     };
 
-    mqtt.instance.onMessageArrived = function(message) {
+    mqtt.instance.onMessageArrived = function (message) {
       console.log('Message Arrived: ', message.payloadString);
       console.log('From: ', message.destinationName);
 
       var payload = JSON.parse(message.payloadString);
 
-      if(mqtt.waitForMessage &&
-         mqtt.waitForMessage.type === payload.type &&
+      if (mqtt.waitForMessage &&
+          mqtt.waitForMessage.type === payload.type &&
          mqtt.waitForMessage.destinationName === message.destinationName) {
         mqtt.waitForMessage.deferred.resolve(payload);
-        mqtt.waitForMessage = null
+        mqtt.waitForMessage = null;
         $timeout.cancel(mqtt.timeout);
       }
     };
 
-    mqtt.instance.onFailure = function(message) {
+    mqtt.instance.onFailure = function (message) {
       console.log('Connection failed: ' + message.errorMessage);
     };
   }
@@ -70,15 +71,15 @@ angular.module('DeviceSimulator')
     connect: function (device) {
       var deferred = $q.defer();
 
-      if(device) {
+      if (device) {
         mqtt.device = device;
       }
 
-      if(!mqtt.instance) {
+      if (!mqtt.instance) {
         createInstance();
       }
 
-      if(!mqtt.device) {
+      if (!mqtt.device) {
         $q.reject('No device');
       } else {
         // connect the client
@@ -94,18 +95,18 @@ angular.module('DeviceSimulator')
               // Once a connection has been made, make the subscriptions
               mqtt.device.channels.forEach(function (topic) {
                 mqtt.instance.subscribe(topic.channel);
-                console.log('Subscribed to ', topic.channelTemplateName)
+                console.log('Subscribed to ', topic.channelTemplateName);
               });
 
               deferred.resolve();
             },
-            onFailure: function(err){
+            onFailure: function (err) {
               console.log('FAILURE');
               console.error(err);
               deferred.reject(err);
             }
           });
-        } catch(err) {
+        } catch (err) {
           console.log('FAILED');
           console.error(err);
           deferred.reject(err);
@@ -114,12 +115,12 @@ angular.module('DeviceSimulator')
 
       return deferred.promise;
     },
-    sendMessage: function(dstChannel, type, responseType, data){
+    sendMessage: function (dstChannel, type, responseType, data) {
       var deferred = $q.defer();
       var channel = null;
 
       mqtt.device.channels.some(function (topic) {
-        if(topic.channelTemplateName === dstChannel) {
+        if (topic.channelTemplateName === dstChannel) {
           channel = topic.channel;
         }
 
@@ -138,7 +139,7 @@ angular.module('DeviceSimulator')
         deferred.reject('Message not sent');
       }, waitingTime);
 
-      try{
+      try {
         console.log('Sending message: ', data);
         mqtt.instance.send(message);
 
@@ -147,8 +148,7 @@ angular.module('DeviceSimulator')
           destinationName: channel,
           deferred: deferred
         };
-      }
-      catch(error){
+      } catch (error) {
         console.log('Error sending message: ', error);
         deferred.reject(error);
       }

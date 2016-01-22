@@ -1,9 +1,10 @@
+/* global localStorage, ionic, alert */
 angular.module('DeviceSimulator')
 
 .controller('MainCtrl', function ($scope, $state, MQTT) {
   $scope.device = JSON.parse(localStorage.getItem('device'));
 
-  if(!$scope.device) {
+  if (!$scope.device) {
     $state.go('tab.associate');
   }
 
@@ -24,7 +25,7 @@ angular.module('DeviceSimulator')
         .finally(function () {
           $scope.syncing = false;
         });
-    }, function (err) {
+    }, function () {
       console.log('Error trying to connect');
     })
     .finally(function () {
@@ -32,8 +33,7 @@ angular.module('DeviceSimulator')
     });
 })
 
-.controller('HomeCtrl', function($scope, $state, MQTT) {
-
+.controller('HomeCtrl', function ($scope, $state, MQTT) {
   $scope.consumeShot = function () {
     sendMessage('STATUS_REPORT', 'consume_shot')
       .then(function () {
@@ -48,7 +48,7 @@ angular.module('DeviceSimulator')
       });
   };
 
-  function sendMessage(dstChannel, type, responseType, data) {
+  function sendMessage (dstChannel, type, responseType, data) {
     $scope.sending = true;
     $scope.sendingError = false;
 
@@ -65,10 +65,10 @@ angular.module('DeviceSimulator')
   }
 })
 
-.controller('AssociateCtrl', function($scope, $state, API) {
+.controller('AssociateCtrl', function ($scope, $state, API) {
   $scope.device = {};
 
-  ionic.Platform.ready(function(){
+  ionic.Platform.ready(function () {
     $scope.device.serialNumber = ionic.Platform.device().serial ? ionic.Platform.device().serial : getRandomSerialNumber();
   });
 
@@ -94,13 +94,13 @@ angular.module('DeviceSimulator')
         $scope.submitting = false;
         alert(err);
       });
-  }
+  };
 
-  function getRandomSerialNumber() {
-    var serialNumber = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  function getRandomSerialNumber () {
+    var serialNumber = '';
+    var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 
-    for( var i=0; i < 11; i++ ) {
+    for (var i = 0; i < 11; i++) {
       serialNumber += possible.charAt(Math.floor(Math.random() * possible.length));
     }
 
@@ -108,10 +108,10 @@ angular.module('DeviceSimulator')
   }
 })
 
-.controller('InfoCtrl', function($scope, $state) {
+.controller('InfoCtrl', function ($scope, $state) {
   $scope.device = JSON.parse(localStorage.getItem('device'));
 
-  if(!$scope.device) {
+  if (!$scope.device) {
     $state.go('tab.associate');
   }
 });

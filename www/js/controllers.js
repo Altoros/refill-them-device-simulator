@@ -4,36 +4,42 @@ angular.module('DeviceSimulator')
 .controller('MainCtrl', function ($scope, $state, MQTT) {
   $scope.device = JSON.parse(localStorage.getItem('device'));
 
+  $scope.connect = function (device) {
+    $scope.connected = false;
+    $scope.connecting = true;
+
+    MQTT.connect(device)
+      .then(function () {
+        $scope.connected = true;
+        $scope.syncing = true;
+        MQTT.sendMessage('STATUS_REPORT', 'get_status', 'send_status')
+          .then(function (message) {
+            $scope.device = message.data;
+            localStorage.setItem('device', JSON.stringify(message.data));
+
+            $scope.synced = new Date();
+          })
+          .finally(function () {
+            $scope.syncing = false;
+          });
+      }, function () {
+        console.log('Error trying to connect');
+      })
+      .finally(function () {
+        $scope.connecting = false;
+      });
+  };
+
+  if ($scope.device) {
+    $scope.connect($scope.device);
+  }
+})
+
+.controller('HomeCtrl', function ($scope, $state, MQTT) {
   if (!$scope.device) {
     $state.go('tab.associate');
   }
 
-  $scope.connected = false;
-  $scope.connecting = true;
-
-  MQTT.connect($scope.device)
-    .then(function () {
-      $scope.connected = true;
-      $scope.syncing = true;
-      MQTT.sendMessage('STATUS_REPORT', 'get_status', 'send_status')
-        .then(function (message) {
-          $scope.device = message.data;
-          localStorage.setItem('device', JSON.stringify(message.data));
-
-          $scope.synced = new Date();
-        })
-        .finally(function () {
-          $scope.syncing = false;
-        });
-    }, function () {
-      console.log('Error trying to connect');
-    })
-    .finally(function () {
-      $scope.connecting = false;
-    });
-})
-
-.controller('HomeCtrl', function ($scope, $state, MQTT) {
   $scope.consumeShot = function () {
     sendMessage('STATUS_REPORT', 'consume_shot')
       .then(function () {
@@ -82,7 +88,9 @@ angular.module('DeviceSimulator')
 
         API.put('/devices/' + device.id + '/associate', {device: $scope.device})
           .then(function (response) {
-            localStorage.setItem('device', JSON.stringify(response.data.device));
+            var device = response.data.device;
+            localStorage.setItem('device', JSON.stringify(device));
+            $scope.connect(device);
             $state.go('tab.home');
           }, function (err) {
             alert(err);

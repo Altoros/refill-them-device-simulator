@@ -11,7 +11,11 @@
       Refill
     </button>
 
-    <p>Status: {{ device.consumedShots }} consumed shots of {{ device.totalShots }} ({{ device.consumedShots/device.totalShots*100 | number:0 }} %) </p>
+    <p>
+      Status: {{ device.consumedShots }} consumed shots of {{ device.totalShots }} ({{ device.consumedShots/device.totalShots*100 | number:0 }} %)
+      <span ng-show="syncing">Syncing...</span>
+      <span ng-show="synced">(Synced {{ synced | date: 'shortTime' }})</span>
+    </p>
 
     <p ng-show="connecting">Connecting to the Server...</p>
     <p ng-show="!connected && !connecting">Error trying to reach the Server</p>

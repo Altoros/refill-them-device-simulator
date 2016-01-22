@@ -14,6 +14,17 @@ angular.module('DeviceSimulator')
   MQTT.connect($scope.device)
     .then(function () {
       $scope.connected = true;
+      $scope.syncing = true;
+      MQTT.sendMessage('STATUS_REPORT', 'get_status', 'send_status')
+        .then(function (message) {
+          $scope.device = message.data;
+          localStorage.setItem('device', JSON.stringify(message.data));
+
+          $scope.synced = new Date();
+        })
+        .finally(function () {
+          $scope.syncing = false;
+        });
     }, function (err) {
       console.log('Error trying to connect');
     })
@@ -22,24 +33,24 @@ angular.module('DeviceSimulator')
     });
 
   $scope.consumeShot = function () {
-    sendMessage('consume_shot', 'STATUS_REPORT')
-      .then(function (message) {
+    sendMessage('STATUS_REPORT', 'consume_shot')
+      .then(function () {
         $scope.device.consumedShots++;
       });
   };
 
   $scope.refill = function () {
-    sendMessage('refill', 'STATUS_REPORT')
+    sendMessage('STATUS_REPORT', 'refill')
       .then(function () {
         $scope.device.consumedShots = 0;
       });
   };
 
-  function sendMessage(message, channel) {
+  function sendMessage(dstChannel, type, responseType, data) {
     $scope.sending = true;
     $scope.sendingError = false;
 
-    return MQTT.sendMessage(message, channel)
+    return MQTT.sendMessage(dstChannel, type, responseType, data)
       .then(function (message) {
         console.log('Message Sent');
       }, function (err) {

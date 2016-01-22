@@ -46,10 +46,12 @@ angular.module('DeviceSimulator')
       console.log('Message Arrived: ', message.payloadString);
       console.log('From: ', message.destinationName);
 
+      var payload = JSON.parse(message.payloadString);
+
       if(mqtt.waitForMessage &&
-         mqtt.waitForMessage.message === message.payloadString &&
+         mqtt.waitForMessage.type === payload.type &&
          mqtt.waitForMessage.destinationName === message.destinationName) {
-        mqtt.waitForMessage.deferred.resolve(message);
+        mqtt.waitForMessage.deferred.resolve(payload);
         mqtt.waitForMessage = null
         $timeout.cancel(mqtt.timeout);
       }
@@ -112,7 +114,7 @@ angular.module('DeviceSimulator')
 
       return deferred.promise;
     },
-    sendMessage: function(data, dstChannel){
+    sendMessage: function(dstChannel, type, responseType, data){
       var deferred = $q.defer();
       var channel = null;
 
@@ -124,7 +126,12 @@ angular.module('DeviceSimulator')
         return topic.channelTemplateName === dstChannel;
       });
 
-      var message = new Paho.MQTT.Message(data);
+      var payload = {
+        type: type,
+        data: data
+      };
+
+      var message = new Paho.MQTT.Message(JSON.stringify(payload));
       message.destinationName = channel;
 
       mqtt.timeout = $timeout(function () {
@@ -136,7 +143,7 @@ angular.module('DeviceSimulator')
         mqtt.instance.send(message);
 
         mqtt.waitForMessage = {
-          message: data,
+          type: responseType || type,
           destinationName: channel,
           deferred: deferred
         };

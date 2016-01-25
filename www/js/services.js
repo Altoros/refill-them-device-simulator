@@ -136,7 +136,7 @@ angular.module('DeviceSimulator')
       message.destinationName = channel;
 
       mqtt.timeout = $timeout(function () {
-        deferred.reject('Message not sent');
+        deferred.reject('Broker is not responding');
       }, waitingTime);
 
       try {

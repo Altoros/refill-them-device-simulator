@@ -1,0 +1,13 @@
+.alert {
+  background-color: #11c1f3;
+  color: white;
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 5px;
+  box-shadow: -2px -2px 2px rgba(1,0,0,0.5) inset;
+}
+
+.alert.error {
+  background-color: #ef473a;
+  text-align: center;
+}

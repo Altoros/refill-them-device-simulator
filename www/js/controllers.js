@@ -18,6 +18,8 @@ angular.module('DeviceSimulator')
             localStorage.setItem('device', JSON.stringify(message.data));
 
             $scope.synced = new Date();
+          }, function (error) {
+            $scope.syncError = error;
           })
           .finally(function () {
             $scope.syncing = false;
@@ -56,14 +58,13 @@ angular.module('DeviceSimulator')
 
   function sendMessage (dstChannel, type, responseType, data) {
     $scope.sending = true;
-    $scope.sendingError = false;
+    $scope.sendingError = null;
 
     return MQTT.sendMessage(dstChannel, type, responseType, data)
       .then(function (message) {
         console.log('Message Sent');
       }, function (err) {
-        $scope.sendingError = true;
-        console.error(err);
+        $scope.sendingError = err;
       })
       .finally(function () {
         $scope.sending = false;

@@ -14,8 +14,11 @@
     <p>
       Status: {{ device.consumedShots }} consumed shots of {{ device.totalShots }} ({{ device.consumedShots/device.totalShots*100 | number:0 }} %)
       <span class="badge badge-calm" ng-show="syncing">Syncing...</span>
+      <span class="badge badge-assertive" ng-show="!syncing && syncError">
+        {{ syncError }}
+      </span>
       <span class="badge badge-balanced" ng-show="synced">
-        Synced {{ synced | date: 'shortTime' }})
+        Synced {{ synced | date: 'shortTime' }}
       </span>
     </p>
 
@@ -26,7 +29,7 @@
 
     <p class="alert" ng-show="sending">Sending message...</p>
     <p class="alert error" ng-show="sendingError">
-      An error has occurred trying to send the message
+      An error has occurred trying to send the message: {{ sendingError }}
     </p>
 
   </ion-content>

@@ -84,16 +84,19 @@ angular.module('DeviceSimulator')
     API.post('/devices', { serial: $scope.device.serialNumber })
       .then(function (response) {
         var device = response.data.device;
+        var serialNumber = $scope.device.serialNumber;
         delete $scope.device.serialNumber;
-        $scope.device.associationCode = device.associationCode;
+        $scope.device.associationCode = device.metadata.associationCode;
 
-        API.put('/devices/' + device.id + '/associate', {device: $scope.device})
+        API.put('/devices/' + device.deviceId + '/associate', {device: $scope.device})
           .then(function (response) {
             var device = response.data.device;
             localStorage.setItem('device', JSON.stringify(device));
-            $scope.connect(device);
+            // TODO: manage device
+            // $scope.connect(device);
             $state.go('tab.home');
           }, function (err) {
+            $scope.device.serialNumber = serialNumber;
             alert(err);
           })
           .finally(function () {

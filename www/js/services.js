@@ -2,7 +2,8 @@
 angular.module('DeviceSimulator')
 
 .service('API', function ($http) {
-  var API_URL = 'http://localhost:3000';
+  //var API_URL = 'http://refill-them-api.herokuapp.com';
+  var API_URL = 'http://localhost:5000';
 
   function request (method, path, data) {
     return $http({
